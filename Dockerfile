@@ -1,5 +1,5 @@
 FROM golang:alpine as builder
-LABEL maintainer Kenzo Okuda <okuda.kenzo@nttv6.net>
+LABEL maintainer Kenzo Okuda <kyokuheki@gmail.com>
 
 RUN apk add --no-cache \
     git \
@@ -22,17 +22,15 @@ RUN set -eux \
  && glide install \
  && go install github.com/osrg/goplane
 
-FROM golang:alpine
+FROM alpine:edge
 LABEL maintainer Kenzo Okuda <kyokuheki@gmail.com>
 
-COPY --from=builder /go/bin/goplane /go/bin/gobgp /go/bin/gobgpd /go/bin/
+COPY --from=builder /go/bin/goplane /go/bin/gobgp /go/bin/gobgpd /usr/bin/
 
 RUN apk add --no-cache \
-    git \
-    wget \
     curl \
     mtr \
     tcpdump
 
-ENTRYPOINT ["/go/bin/goplane"]
+ENTRYPOINT ["/usr/bin/goplane"]
 CMD ["-h"]
